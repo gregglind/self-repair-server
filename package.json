@@ -8,15 +8,30 @@
     "webpack": "^1.4.13"
   },
   "devDependencies": {
+    "chai-json-schema": "^1.1.0",
     "es6-promises": "^1.0.9",
+    "karma": "^0.12.31",
+    "karma-firefox-launcher": "^0.1.4",
+    "karma-mocha": "^0.1.10",
+    "karma-webpack": "^1.5.0",
     "localStorage": "^1.0.3",
-    "mocha-lcov-reporter": "0.0.1",
-    "testdom": "^1.0.0"
+    "sinon": "^1.12.2",
+    "testdom": "^1.0.0",
+    "tv4": "^1.1.9"
   },
   "scripts": {
     "test": "echo \"Tests are noop\"",
-    "test2":  "istanbul --hook-run-in-context cover _mocha -- test/cover-1.js"
+    "test2": "istanbul --hook-run-in-context cover _mocha -- test/cover-1.js",
+    "test3": "./node_modules/.bin/mocha --compilers js:mocha-traceur test/",
+    "test4": "node ./node_modules/mocha/bin/mocha  -r blanket  test/blanketed.js -R html-cov > coverage.html"
   },
   "author": "Gregg Lind <glind@mozilla.com>",
-  "license": "MPL 2"
+  "license": "MPL 2",
+  "config": {
+    "blanket": {
+      "pattern": "",
+      "data-cover-never": "node_modules",
+      "loader": "../../../es6-blanket-loader"
+    }
+  }
 }
