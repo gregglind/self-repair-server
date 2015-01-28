@@ -10,6 +10,7 @@
   "devDependencies": {
     "chai-json-schema": "^1.1.0",
     "es6-promises": "^1.0.9",
+    "istanbul-instrumenter-loader": "^0.1.2",
     "karma": "^0.12.31",
     "karma-coverage": "^0.2.7",
     "karma-firefox-launcher": "^0.1.4",
