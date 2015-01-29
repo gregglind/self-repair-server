@@ -1,19 +1,24 @@
 // Karma configuration
 // Generated on Tue Jan 27 2015 14:16:43 GMT-0600 (CST)
 
+/**
+  *
+  * to run:
+  * ./node_modules/karma/bin/karma --log-level debug start karma.conf.js
+  *
+  */
 
 /* features of this Karma conf:
 - each test is run as a webpack
--
+- es6 okay in sources and tests
 */
-// http://npm.taobao.org/package/istanbul-instrumenter-loader
 
 
 module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: 'karma/compiled',
+    basePath: 'karma',
 
 
     // frameworks to use
@@ -23,8 +28,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      //{pattern: 'src/*.js', included: false}, // not needed, get wepbacked.
       {pattern: 'test/*.js', included: true}
+      //{pattern: 'src/*.js', included: false}, // not needed, get wepbacked via tests
     ],
 
     // list of files to exclude
@@ -34,42 +39,42 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'test/*': ['webpack'] // , 'coverage']  // not recursive!
+        'test/*': ['webpack'] // traceur, coverage handled by webpack.  // not recursive!
     },
 
     plugins: [
-        //require("karma-webpack")
-        'karma-coverage',
+        'karma-coverage',   // for the reporter
         'karma-webpack',
         'karma-mocha',
         'karma-firefox-launcher'
     ],
 
-    traceurPreprocessor: {
-      // options passed to the traceur-compiler
-      // see traceur --longhelp for list of options
-      options: {
-        sourceMaps: false,
-        modules: 'commonjs' // non default, important to make them webpackable
-      },
-      // custom filename transformation function
-      transformPath: function(path) {
-        return path;
-        //console.log(path);
-        //return path.replace(/\.es6$/, '.js');
-      }
-    },
 
-
-    //http://npm.taobao.org/package/istanbul-instrumenter-loader
     webpack: {
       module: {
-        //loaders: [ ... ],
-        postLoaders: [ { // << add subject as webpack's postloader
+        postLoaders: [
+        /**
+          * 1.  instrumement all sources, in original form.
+          * 2.  es6 -> es5 all instrumented source AND tests.
+          * 3.  webpack each test.  (which bundles in a proper require and main)
+          *
+          * This allows
+          * - writing all sources *and* tests in es6
+          * - full coverage
+          */
+           //http://npm.taobao.org/package/istanbul-instrumenter-loader
+        {
           test: /\.js$/,
-          exclude: /(test|node_modules|bower_components)\//,
+          exclude: /(node_modules|bower_components)\//,
           loader: 'istanbul-instrumenter'
-        } ]
+        },
+        { // << traceur *after* instrumenting
+          test: /\.js$/,
+          // have to traceur the tests too.
+          exclude: /(node_modules|bower_components)\//,
+          loader: 'traceur'
+        },
+        ]
       },
     },
 
@@ -90,6 +95,7 @@ module.exports = function(config) {
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
+    //
 
 
     // enable / disable watching file and executing tests whenever any file changes
