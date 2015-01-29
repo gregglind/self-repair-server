@@ -20,6 +20,7 @@
     "localStorage": "^1.0.3",
     "sinon": "^1.12.2",
     "testdom": "^1.0.0",
+    "traceur-loader": "^0.6.3",
     "tv4": "^1.1.9"
   },
   "scripts": {
