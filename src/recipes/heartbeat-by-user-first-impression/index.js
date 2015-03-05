@@ -160,19 +160,20 @@ let shouldRun = function (userstate, config, extras) {
     return false;
   }
 
+  let myRng = extras.randomNumber !== undefined ? extras.randomNumber : Math.random();
+
+  if (myRng > config.sample) {
+    events.message(NAME, "bad-random-number", {randomNumber: myRng});
+    return false;
+  }
+
   if (!waitedEnough(restdays, lastRun, now)) {
     events.message(NAME, "too-soon", {restdays: restdays, lastRun: lastRun, now: now});
     return false;
   }
 
-  let myRng = extras.randomNumber !== undefined ? extras.randomNumber : Math.random();
+  return true;
 
-  if (myRng <= config.sample) {
-    return true;
-  } else {
-    events.message(NAME, "bad-random-number", {randomNumber: myRng});
-    return false;
-  }
 };
 
 // run / do
