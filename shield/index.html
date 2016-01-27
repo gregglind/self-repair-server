@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+.code {
+  border: 1px dotted;
+  background-color: rgba(17, 14, 161, 0.52);
+  line-height: 1.4em;
+  font-size: 14px;
+  width: 600px;
+  color: rgba(255, 255, 255, 0.78);
+}
+</style>
+</head>
+<body>
+<script inline src="./shield.js"></script>
+<script>
+  window.s= window.Mozilla.Shield;
+</script>
+
+  <h1> THIS IS SHIELD</h1>
+  <p>In your console, use the <kbd>s</kbd> or <kbd>Mozilla.Shield</kbd> object.</p>
+
+  <pre class='code'>
+// Fix Bad Search. A recipe.  (See note 1)
+
+function hasBadSearch(engine) {
+  // see note 1, could return reason.
+  var blacklist = {'garbageCo': 1, 'barf': 1};
+  return engine in blacklist
+}
+
+function fixBadSearch(was) {
+  s.resetSearch(was);
+  s.telemetry("shield", "searchReset", was, "bad-domain");
+}
+
+
+// Actually do the deed
+
+// should check if we have already done this.
+var eng = s.personInfo().searchEngine;
+if (hasBadSearch(eng)) {
+  fixBadSearch(eng);
+  s.remember("resetSearch", eng, Date.now());
+  s.proveIt("search will stay fixed");
+}
+  </pre>
+
+  <pre id="note 1">
+  NOTE 1, How to detect bad search
+
+  claim: name isn't enough, and is fuzzable.
+  this needs to be subtle:
+  - if google, yahoo, then partner code
+  - otherwise by url
+  - otherwise by name
+
+  </pre>
+</body>
+</html>
